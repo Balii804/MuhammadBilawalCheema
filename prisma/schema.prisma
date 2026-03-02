@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String          @id @default(cuid())
+  email     String          @unique
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  chatMessages        ChatMessage[]
+  monthlyUsages       UserMonthlyUsage[]
+  subscriptionBundles SubscriptionBundle[]
+}
+
+model ChatMessage {
+  id          String   @id @default(cuid())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  question    String
+  answer      String
+  tokensUsed  Int
+  createdAt   DateTime @default(now())
+}
+
+model UserMonthlyUsage {
+  id                String   @id @default(cuid())
+  user              User     @relation(fields: [userId], references: [id])
+  userId            String
+  month             String   // YYYY-MM format
+  freeMessagesUsed  Int      @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@unique([userId, month])
+}
+
+model SubscriptionBundle {
+  id             String             @id @default(cuid())
+  user           User               @relation(fields: [userId], references: [id])
+  userId         String
+  /// Application-level enum: BASIC | PRO | ENTERPRISE
+  tier           String
+  /// Application-level enum: MONTHLY | YEARLY
+  billingCycle   String
+  maxMessages    Int?               // null means unlimited (Enterprise)
+  messagesUsed   Int                @default(0)
+  price          Float
+  startDate      DateTime
+  endDate        DateTime
+  renewalDate    DateTime
+  autoRenew      Boolean            @default(true)
+  /// Application-level enum: ACTIVE | INACTIVE | CANCELLED
+  status         String             @default("ACTIVE")
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+}
+
