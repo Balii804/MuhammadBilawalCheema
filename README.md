@@ -419,6 +419,32 @@ The application uses Prisma with SQLite (easily switchable to PostgreSQL). Key m
 
 7. **Payment Simulation**: 20% random failure rate to simulate real-world payment processing.
 
+## Testing
+
+A comprehensive test suite is included to verify all functionality, edge cases, and requirements:
+
+```bash
+# Make sure server is running first
+npm run dev
+
+# In another terminal, run the test suite
+./test-suite.sh
+```
+
+The test suite covers:
+- ✅ Health checks and basic connectivity
+- ✅ Free quota tracking (3 messages/month)
+- ✅ All subscription tiers (Basic, Pro, Enterprise)
+- ✅ Chat with subscriptions
+- ✅ Multiple active bundles
+- ✅ Subscription cancellation
+- ✅ Subscription renewal and payment simulation
+- ✅ Error handling and validation
+- ✅ Chat history retrieval
+- ✅ Edge cases (long questions, special characters, etc.)
+- ✅ Mock OpenAI delay simulation
+- ✅ Monthly quota reset logic
+
 ## Notes
 
 - The OpenAI integration is mocked with simulated delays (500-1500ms)
